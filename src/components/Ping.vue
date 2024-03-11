@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>{{ msg }}</p>
+        <p class="sanity-check">{{ msg }}</p>
     </div>
 </template>
 
@@ -32,4 +32,9 @@
     };
 </script>
 
-  
+<style scoped>
+.sanity-check {
+    margin-top: 15px;
+    text-align: center;
+}
+</style>

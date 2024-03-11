@@ -1,5 +1,5 @@
 <template>
-    <div class="dashboard-container">
+    <div class="dashboard-title-container">
         <div class="city-container">{{ city }}</div>
         <div class="postcode-container">{{ postcode }}</div>
     </div>
