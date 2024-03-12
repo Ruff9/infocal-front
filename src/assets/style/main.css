@@ -11,6 +11,7 @@
   --button-active: #cc524f; /* 20% of original */
   
   --button-text: white;
+  --border-color: #FF6663;
 }
 
 .main-container {

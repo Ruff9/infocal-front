@@ -1,15 +1,20 @@
 <template>
     <div class="dashboard-container">
-        <DashboardTitle
+        <MainTitle
             v-if="data != {}"
             :city="data['city']"
+        />
+        <Panel
             :postcode="data['postcode']"
+            :insee="data['insee_code']"
+            :population="data['population']"
         />
     </div>
 </template>
 
 <script setup>
-    import DashboardTitle from './dashboard_parts/DashboardTitle.vue'
+    import MainTitle from './dashboard_parts/MainTitle.vue'
+    import Panel from './dashboard_parts/Panel.vue'
 
     const props = defineProps(['data'])
 </script>

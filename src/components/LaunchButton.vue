@@ -1,11 +1,11 @@
 <template>
     <div class="launch-button" @click="$emit('launchFinder')">Où suis-je ?</div>
-    <Ping />
+    <!-- <Ping /> -->
 </template>
 
 <script setup>
 defineEmits(['launchFinder'])
-import Ping from './Ping.vue'
+// import Ping from './Ping.vue'
 </script>
 
 <style scoped>
