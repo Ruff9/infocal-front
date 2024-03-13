@@ -1,5 +1,5 @@
 <template>
-    <p class="location-status">{{ content }}</p>
+    <p class="location-error">{{ content }}</p>
 </template>
 
 <script setup>
@@ -7,7 +7,7 @@
 </script>
 
 <style scoped>
-    .location-status {
+    .location-error {
         margin-bottom: 20px;
         text-align: center;
     }

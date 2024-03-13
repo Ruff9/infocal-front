@@ -1,17 +1,18 @@
 <template>
     <main class="main-container">
         <div class="content-container">
-            <Status 
-                v-if="statusContent != ''"
-                :content="statusContent"
+            <LocationError
+                v-if="locationErrorMessage != ''"
+                :content="locationErrorMessage"
             />
+            <p v-if="loading">Recherche ...</p>
             <LaunchButton
                 v-if="displayButton"
                 @launchFinder="localizeMe"
             />
-            <Dashboard 
+            <Dashboard
                 v-if="displayDashboard"
-                :data=cityData
+                :data=dashboardData
             />
         </div>
     </main>
@@ -19,75 +20,51 @@
 
 <script setup>
     import LaunchButton from '../components/LaunchButton.vue'
-    import Status from '../components/Status.vue'
+    import LocationError from '../components/LocationError.vue'
     import Dashboard from '../components/Dashboard.vue'
 
-    import axios from 'axios';
+    import { getCity, getInseeCode } from '@/api'
     import { ref } from 'vue'
 
     const displayButton = ref(true)
+    const loading = ref(false)
     const displayDashboard = ref(false)
-    const statusContent = ref("")
+    const locationErrorMessage = ref("")
 
-    const cityData = {
-        city: '',
-        postcode: '',
-        insee_code: '',
-        population: ''
-    }
+    let dashboardData = {}
 
     async function localizeMe() {
         async function success(position) {
-            await localizeCity(position.coords.latitude, position.coords.longitude);
-        }
-
-        function error() {
-            statusContent.value = "Impossible de vous trouver :(";
-        }
-
-        const options = {
-            enableHighAccuracy: true,
+            collectData(position.coords.latitude, position.coords.longitude)
         };
 
+        function error() {
+            locationErrorMessage.value = "Impossible de vous trouver :(";
+        };
+
+        const options = { enableHighAccuracy: true };
+
         if (!navigator.geolocation) {
-            statusContent.value = "La géolocalisation ne fonctionne pas dans votre navigateur :(";
+            locationErrorMessage.value = "La géolocalisation ne fonctionne pas dans votre navigateur :(";
         } else {
-            statusContent.value = "Recherche ...";
             displayButton.value = false;
+            loading.value = true;
             navigator.geolocation.getCurrentPosition(success, error, options);
         }
     }
 
-    async function localizeCity(latitude, longitude) {
-        const base = "https://nominatim.openstreetmap.org/reverse?";
-        const params = "&format=geocodejson&accept-language=fr"
-        const url = base + "lat=" + latitude + "&lon=" + longitude + params;
+    async function collectData(latitude, longitude) {
+        const cityData = await getCity(latitude, longitude);
+        const geoData = await getInseeCode(cityData['cityName'], cityData['postcode']);
 
-        const response = await fetch(url)
-        const result = await response.json()
+        dashboardData = {
+            city: cityData['cityName'],
+            postcode: cityData['postcode'],
+            insee_code: geoData['insee_code'],
+            population: geoData['population']
+        }
 
-        const data = result["features"][0]["properties"]["geocoding"]
-
-        cityData['city'] = data["city"]
-        cityData['postcode'] = data["postcode"]
-
-        await collectData({ name: data["city"], postcode: data["postcode"] })
-    }
-
-    async function collectData(city) {
-        const geo_base = "https://geo.api.gouv.fr/communes?";
-        const geo_url = geo_base + "codePostal=" + city["postcode"] + "&name=" + city["name"];
-
-        axios.get(geo_url)
-            .then(function (response) {
-                cityData['insee_code'] = response["data"][0]["code"]
-                cityData['population'] = response["data"][0]["population"]
-
-                statusContent.value = "";
-                displayDashboard.value = true;
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+        loading.value = false;
+        displayDashboard.value = true;
     }
 </script>
