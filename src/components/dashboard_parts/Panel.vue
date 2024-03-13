@@ -8,7 +8,7 @@
         <div class="panel-results-container">
             <div>{{ postcode }}</div>
             <div>{{ insee }}</div>
-            <div>{{ population }} hbts</div>
+            <div>{{ $filters.formatNumber(population) }} hbts</div>
         </div>
     </div>
 </template>
