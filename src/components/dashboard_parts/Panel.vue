@@ -7,8 +7,8 @@
         </div>
         <div class="panel-results-container">
             <div>{{ postcode }}</div>
-            <div>{{ insee }}</div>
-            <div>{{ $filters.formatNumber(population) }} hbts</div>
+            <div>{{ insee_code }}</div>
+            <div>{{ Intl.NumberFormat('fr').format(population) }} hbts</div>
         </div>
     </div>
 </template>
@@ -16,7 +16,7 @@
 <script setup>
     defineProps({
         postcode: String,
-        insee: String,
+        insee_code: String,
         population: Number
     })
 </script>

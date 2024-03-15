@@ -6,7 +6,7 @@
         />
         <Panel
             :postcode="data['postcode']"
-            :insee="data['insee_code']"
+            :insee_code="data['insee_code']"
             :population="data['population']"
         />
     </div>
